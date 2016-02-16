@@ -23,7 +23,7 @@ public class Robot extends IterativeRobot {
     ADXRS450_Gyro gyro;//gyro
     AnalogInput forwardSensor, sideSensor;
     CameraServer camera;
-    double speedX, speedY, speedRote, gyroAngle, throttle, valueToMm = 0.001041, xDistance, yDistance;
+    double speedX, speedY, speedRote, gyroAngle, throttle, valueToMm = 0.001041/* scale factor for analog ultrasonics*/, xDistance, yDistance;
     //double Kp = 0.03;
     boolean armed = false,hasShot = false,countTick = false, xPosition, yPosition;
     int tickCount = 0, currentTick = 0;
@@ -42,9 +42,9 @@ public class Robot extends IterativeRobot {
     	rook.setExpiration(0.1);
     	stick1 = new Joystick(1); 
     	stick2 = new Joystick(2);
-    	shoot1 = new Victor(3);
+    	shoot1 = new Victor(1);
     	shoot2 = new Victor(5);
-    	treads = new Victor(1);
+    	treads = new Victor(3);
     	arm = new Victor(6);
     	arm.setSafetyEnabled(true);
     	arm.setExpiration(0.1);
@@ -66,36 +66,35 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	gyro.reset();
     	xDistance = forwardSensor.getValue() * valueToMm;
-    	yDistance = forwardSensor.getValue() * valueToMm;
-    	if (tickCount< 50) {
+    	yDistance = forwardSensor.getValue() * valueToMm;//gets current position
+    	if (tickCount< 20) {
 			rook.mecanumDrive_Polar(0.6, 0, 0);//drives forward 
-		}
-    	if (tickCount > 50 && xDistance > 4308) {
+		}//drives forward for 4 sec 
+    	if (tickCount > 20 && xDistance > 4308) {
 			rook.mecanumDrive_Cartesian(0.5, 0, 0, gyroAngle);
-		}
+		}//drives to ideal x
     	if(xDistance <= 4308 ){
     		xPosition = true;
     	}
     	if (tickCount > 50 && yDistance > 914) {
 			rook.mecanumDrive_Cartesian(0, 0.5, 0, gyroAngle);
-		}
+		}//drives to ideal y
     	if (yDistance <= 914 ) {
 			yPosition = true;
 		} 
-    	if (xPosition && yPosition) {
-			
+    	if (xPosition && yPosition) {//in ideal position
 			currentTick = tickCount;
-			if (tickCount >= currentTick && tickCount <= currentTick + 7) {
+			if (tickCount >= currentTick && tickCount <= currentTick + 10) {
 				rook.mecanumDrive_Polar(0.65, 60, 0.75);;
-			}
-			if (tickCount > currentTick +7) {
-				 shoot1.set(0.25);
-				 shoot2.set(-0.25);
-			}
+			}//drives toward goal for about 2 sec
+			if (tickCount > currentTick + 10) {
+				 shoot1.set(-0.25);
+				 shoot2.set(0.25);
+			}//shoots after in ideal shoot position
 		}
     	//TODO add shoot
     	// code for arduino & ultrasonic
-    	tickCount++;
+    	tickCount++;//counts ticks; tick == 200msec
     }
 
     /**
@@ -114,13 +113,13 @@ public class Robot extends IterativeRobot {
 			rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, gyroAngle /* Kp*/);//if angle starts freaking out then uncomment the above if statment 
     	}else {
     		rook.mecanumDrive_Cartesian(speedX, speedY, 0, gyroAngle/* Kp*/);
-		}
+		}//rotation toggle
 		if(stick1.getRawButton(1)){
     		treads.set(1.0);
     	}//activate treads
     	if(stick2.getRawButton(2)){//arm shooter
-    		shoot1.set(0.25);
-    		shoot2.set(-0.25);
+    		shoot1.set(-0.25);
+    		shoot2.set(0.25);
     		armed = true;//will only fire if armed is true
     	}else {
 			armed = false; 
@@ -140,11 +139,11 @@ public class Robot extends IterativeRobot {
     	if (stick2.getRawButton(12) && hasShot == true) {//closes gate
 			gate.set(0.0);
 		}
-    	//TODO figure out order of operations
+    	
     	   
     	if (stick2.getRawButton(6)) {
-    		shoot1.set(-0.25);
-    		shoot2.set(0.25);
+    		shoot1.set(0.25);
+    		shoot2.set(-0.25);
 		}//draws in ball
     	
     	if (stick2.getRawButton(5)) {//arm up
