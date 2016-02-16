@@ -21,12 +21,12 @@ public class Robot extends IterativeRobot {
     Talon leftRear;
     Servo gate,push;//servos for pushing out ball and gate
     ADXRS450_Gyro gyro;//gyro
-    Ultrasonic forwardSensor, sideSensor;
+    AnalogInput forwardSensor, sideSensor;
     CameraServer camera;
-    double speedX, speedY, speedRote, gyroAngle, throttle;
+    double speedX, speedY, speedRote, gyroAngle, throttle, valueToMm = 1.041, xDistance, yDistance;
     //double Kp = 0.03;
     boolean armed = false,hasShot = false,countTick = false, xPosition, yPosition;
-    int tickCount = 0, xDistance, yDistance, currentTick = 0;
+    int tickCount = 0, currentTick = 0;
     
     
     
@@ -53,6 +53,8 @@ public class Robot extends IterativeRobot {
     	gyro = new ADXRS450_Gyro();
     	gyro.calibrate();
     	gyro.reset();
+    	forwardSensor = new AnalogInput(0);
+    	sideSensor = new AnalogInput(1);
     	camera = CameraServer.getInstance();
     	camera.setQuality(50);
     	camera.startAutomaticCapture("cam0 ");
@@ -63,6 +65,8 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
     	gyro.reset();
+    	xDistance = forwardSensor.getValue() * valueToMm;
+    	yDistance = forwardSensor.getValue() * valueToMm;
     	if (tickCount< 50) {
 			rook.mecanumDrive_Polar(0.6, 0, 0);//drives forward 
 		}
