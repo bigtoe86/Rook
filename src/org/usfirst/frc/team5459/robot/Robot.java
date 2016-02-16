@@ -111,8 +111,8 @@ public class Robot extends IterativeRobot {
     		treads.set(1.0);
     	}//activate treads
     	if(stick2.getRawButton(2)){//arm shooter
-    		shoot1.set(1.0);
-    		shoot2.set(-1.0);
+    		shoot1.set(0.25);
+    		shoot2.set(-0.25);
     		armed = true;//will only fire if armed is true
     	}else {
 			armed = false; 
@@ -135,8 +135,8 @@ public class Robot extends IterativeRobot {
     	//TODO figure out order of operations
     	   
     	if (stick2.getRawButton(6)) {
-    		shoot1.set(-1.0);
-    		shoot2.set(1.0);
+    		shoot1.set(-0.25);
+    		shoot2.set(0.25);
 		}//draws in ball
     	
     	if (stick2.getRawButton(5)) {//arm up
