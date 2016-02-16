@@ -23,7 +23,7 @@ public class Robot extends IterativeRobot {
     ADXRS450_Gyro gyro;//gyro
     AnalogInput forwardSensor, sideSensor;
     CameraServer camera;
-    double speedX, speedY, speedRote, gyroAngle, throttle, valueToMm = 1.041, xDistance, yDistance;
+    double speedX, speedY, speedRote, gyroAngle, throttle, valueToMm = 0.001041, xDistance, yDistance;
     //double Kp = 0.03;
     boolean armed = false,hasShot = false,countTick = false, xPosition, yPosition;
     int tickCount = 0, currentTick = 0;
@@ -40,7 +40,7 @@ public class Robot extends IterativeRobot {
     	rook.setInvertedMotor(MotorType.kFrontLeft,  true);
     	rook.setSafetyEnabled(true);
     	rook.setExpiration(0.1);
-    	stick1 = new Joystick(1);
+    	stick1 = new Joystick(1); 
     	stick2 = new Joystick(2);
     	shoot1 = new Victor(3);
     	shoot2 = new Victor(5);
