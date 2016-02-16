@@ -84,6 +84,10 @@ public class Robot extends IterativeRobot {
 			if (tickCount >= currentTick && tickCount <= currentTick + 7) {
 				rook.mecanumDrive_Polar(0.65, 60, 0.75);;
 			}
+			if (tickCount > currentTick +7) {
+				 shoot1.set(0.25);
+				 shoot2.set(-0.25);
+			}
 		}
     	//TODO add shoot
     	// code for arduino & ultrasonic
