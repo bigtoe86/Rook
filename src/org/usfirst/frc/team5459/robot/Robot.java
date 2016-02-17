@@ -24,7 +24,7 @@ public class Robot extends IterativeRobot {
     AnalogInput forwardSensor, sideSensor;
     CameraServer camera;
     double speedX, speedY, speedRote, gyroAngle, throttle, valueToMm = 0.001041/* scale factor for analog ultrasonics*/, xDistance, yDistance;
-    //double Kp = 0.03;
+    
     boolean armed = false,hasShot = false,countTick = false, xPosition, yPosition;
     int tickCount = 0, currentTick = 0;
     
@@ -110,9 +110,9 @@ public class Robot extends IterativeRobot {
 			gyroAngle = gyroAngle - 360;
 		}*/
     	if (stick1.getRawButton(2)) {
-			rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, gyroAngle /* Kp*/);//if angle starts freaking out then uncomment the above if statment 
+			rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, gyroAngle );//if angle starts freaking out then uncomment the above if statment 
     	}else {
-    		rook.mecanumDrive_Cartesian(speedX, speedY, 0, gyroAngle/* Kp*/);
+    		rook.mecanumDrive_Cartesian(speedX, speedY, 0, gyroAngle);
 		}//rotation toggle
 		if(stick1.getRawButton(1)){
     		treads.set(1.0);
