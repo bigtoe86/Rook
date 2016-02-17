@@ -173,20 +173,23 @@ public class Robot extends IterativeRobot {
      */
     public double throttleEncode(Joystick stick) {
 		double[] encode ={1.0,0.825,0.65,0.475,0.3, 0.125};//values for var speed
-    	if (stick.getThrottle()>= 0.6) {//TODO add code for 6th speed
+    	if (stick.getThrottle()>= 0.6666) {//TODO add code for 6th speed
 			return encode[0];
 		}
-		if (stick.getThrottle()<= -0.6) {
-			return encode[4];
+		if (stick.getThrottle()<= -0.6666) {
+			return encode[5];
 		}
-    	if (stick.getThrottle() < 0.6 && stick.getThrottle() >= 0.2) {
+    	if (stick.getThrottle() < 0.6666 && stick.getThrottle() >= 0.3333) {
 			return encode[1];
 		}
-    	if (stick.getThrottle() < -0.6 && stick.getThrottle() >= -0.2) {
-			return encode[3];
+    	if (stick.getThrottle() < -0.6666 && stick.getThrottle() >= -0.3333) {
+			return encode[4];
 		}
-    	if (stick.getThrottle() < 0.2 && stick.getThrottle() > -0.2) {
+    	if (stick.getThrottle() < 0.3333 && stick.getThrottle() > 0) {
 			return encode[2];
+		}
+    	if (stick.getThrottle() < -0.3333 && stick.getThrottle() > 0) {
+			return encode[3]
 		}
     	return 0.0;
 	}
