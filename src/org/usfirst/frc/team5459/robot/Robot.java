@@ -1,4 +1,5 @@
-
+//Team 5459 Code
+//Filip Kernan
 package org.usfirst.frc.team5459.robot;
 
 import java.security.PublicKey;
@@ -59,7 +60,6 @@ public class Robot extends IterativeRobot {
     	camera.setQuality(50);
     	camera.startAutomaticCapture("cam0 ");
     }
-
     /**
      * This function is called periodically during autonomous
      */
@@ -115,8 +115,11 @@ public class Robot extends IterativeRobot {
     		rook.mecanumDrive_Cartesian(speedX, speedY, 0, gyroAngle);
 		}//rotation toggle
 		if(stick1.getRawButton(1)){
-    		treads.set(1.0);
-    	}//activate treads
+    		treads.set(1.0); 
+    	}else {
+    		treads.set(0.0);
+    	}
+		//tread toggle
     	if(stick2.getRawButton(2)){//arm shooter
     		shoot1.set(-0.25);
     		shoot2.set(0.25);
@@ -189,7 +192,7 @@ public class Robot extends IterativeRobot {
 			return encode[2];
 		}
     	if (stick.getThrottle() < -0.3333 && stick.getThrottle() > 0) {
-			return encode[3]
+			return encode[3];
 		}
     	return 0.0;
 	}
