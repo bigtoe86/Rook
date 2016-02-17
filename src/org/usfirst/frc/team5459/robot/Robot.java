@@ -69,10 +69,22 @@ public class Robot extends IterativeRobot {
     	yDistance = forwardSensor.getValue() * valueToMm;//gets current position
     	if (tickCount< 20) {
 			rook.mecanumDrive_Polar(0.6, 0, 0);//drives forward 
+		}else {
+			rook.mecanumDrive_Polar(0, 0, 0);
 		}//drives forward for 4 sec 
     	if (tickCount > 20 && xDistance > 4308) {
-			rook.mecanumDrive_Cartesian(0.5, 0, 0, gyroAngle);
-		}//drives to ideal x
+    		if (tickCount > 50 && yDistance > 914) {
+    			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, gyroAngle);
+    		}else {
+				rook.mecanumDrive_Cartesian(0.5, 0, 0, gyroAngle);
+			}
+		}else {
+			if (tickCount > 50 && yDistance > 914) {
+				rook.mecanumDrive_Cartesian(0, 0.5, 0, gyroAngle);
+			}else {
+				rook.mecanumDrive_Cartesian(0, 0, 0, gyroAngle);
+			} 
+		}
     	if(xDistance <= 4308 ){
     		xPosition = true;
     	}
@@ -86,15 +98,19 @@ public class Robot extends IterativeRobot {
 			currentTick = tickCount;
 			if (tickCount >= currentTick && tickCount <= currentTick + 10) {
 				rook.mecanumDrive_Polar(0.65, 60, 0.75);;
+			}else {
+				rook.mecanumDrive_Polar(0, 60, 0);
 			}//drives toward goal for about 2 sec
 			if (tickCount > currentTick + 10) {
 				 shoot1.set(-0.25);
 				 shoot2.set(0.25);
+			}else {
+				shoot1.set(0.0);
+				shoot2.set(0.0);
 			}//shoots after in ideal shoot position
 		}
-    	//TODO add shoot
-    	// code for arduino & ultrasonic
     	tickCount++;//counts ticks; tick == 200msec
+    	Timer.delay(0.005);
     }
 
     /**
