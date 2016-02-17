@@ -125,7 +125,9 @@ public class Robot extends IterativeRobot {
     		shoot2.set(0.25);
     		armed = true;//will only fire if armed is true
     	}else {
-			armed = false; 
+			armed = false;
+			shoot1.set(0.0);
+			shoot2.set(0.0);
 		}
     	if (stick2.getRawButton(1) && armed == true) {//shoots
 			gate.set(1.0);
@@ -147,13 +149,20 @@ public class Robot extends IterativeRobot {
     	if (stick2.getRawButton(6)) {
     		shoot1.set(0.25);
     		shoot2.set(-0.25);
+		}else {
+			shoot1.set(0.0);
+			shoot2.set(0.0);
 		}//draws in ball
     	
     	if (stick2.getRawButton(5)) {//arm up
 			arm.set(0.2);
+		}else {
+			arm.set(0.0);
 		}
     	if (stick2.getRawButton(3)) {//arm down
 			arm.set(-0.2);
+		}else {
+			arm.set(0.0);
 		}
     	
     	if (countTick) {
