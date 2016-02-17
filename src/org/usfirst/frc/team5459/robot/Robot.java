@@ -67,28 +67,26 @@ public class Robot extends IterativeRobot {
     	gyro.reset();
     	xDistance = forwardSensor.getValue() * valueToMm;
     	yDistance = forwardSensor.getValue() * valueToMm;//gets current position
-    	if (tickCount< 20) {
+    	if (tickCount< 200) {
 			rook.mecanumDrive_Polar(0.6, 0, 0);//drives forward 
 		}else {
 			rook.mecanumDrive_Polar(0, 0, 0);
 		}//drives forward for 4 sec 
-    	if (tickCount > 20 && xDistance > 4308) {
-    		if (tickCount > 50 && yDistance > 914) {
+    	if (tickCount > 200 && xDistance > 4308) {
+    		if (tickCount > 500 && yDistance > 914) {
     			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, gyroAngle);
     		}else {
 				rook.mecanumDrive_Cartesian(0.5, 0, 0, gyroAngle);
 			}
 		}else {
-			if (tickCount > 50 && yDistance > 914) {
+			if (tickCount > 500 && yDistance > 914) {
 				rook.mecanumDrive_Cartesian(0, 0.5, 0, gyroAngle);
-			}else {
-				rook.mecanumDrive_Cartesian(0, 0, 0, gyroAngle);
 			} 
 		}
     	if(xDistance <= 4308 ){
     		xPosition = true;
     	}
-    	if (tickCount > 50 && yDistance > 914) {
+    	if (tickCount > 500 && yDistance > 914) {
 			rook.mecanumDrive_Cartesian(0, 0.5, 0, gyroAngle);
 		}//drives to ideal y
     	if (yDistance <= 914 ) {
@@ -96,12 +94,12 @@ public class Robot extends IterativeRobot {
 		} 
     	if (xPosition && yPosition) {//in ideal position
 			currentTick = tickCount;
-			if (tickCount >= currentTick && tickCount <= currentTick + 10) {
+			if (tickCount >= currentTick && tickCount <= currentTick + 100) {
 				rook.mecanumDrive_Polar(0.65, 60, 0.75);;
 			}else {
 				rook.mecanumDrive_Polar(0, 60, 0);
 			}//drives toward goal for about 2 sec
-			if (tickCount > currentTick + 10) {
+			if (tickCount > currentTick + 100) {
 				 shoot1.set(-0.25);
 				 shoot2.set(0.25);
 			}else {
@@ -152,7 +150,7 @@ public class Robot extends IterativeRobot {
 			countTick = true;
 		}
     	
-    	if (hasShot == true && tickCount == 2){//auto reset push
+    	if (hasShot == true && tickCount == 20){//auto reset push
     		push.set(0.0);
     		countTick = false;
     		tickCount = 0;
@@ -192,7 +190,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-    	//TODO write test
+    	
     }
     
     /*
@@ -201,7 +199,7 @@ public class Robot extends IterativeRobot {
      */
     public double throttleEncode(Joystick stick) {
 		double[] encode ={1.0,0.825,0.65,0.475,0.3, 0.125};//values for var speed
-    	if (stick.getThrottle()>= 0.6666) {//TODO add code for 6th speed
+    	if (stick.getThrottle()>= 0.6666) {
 			return encode[0];
 		}
 		if (stick.getThrottle()<= -0.6666) {
