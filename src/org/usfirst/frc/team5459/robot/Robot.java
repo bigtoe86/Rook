@@ -41,8 +41,8 @@ public class Robot extends IterativeRobot {
     	rook.setInvertedMotor(MotorType.kFrontLeft,  true);
     	rook.setSafetyEnabled(true);
     	rook.setExpiration(0.1);
-    	stick1 = new Joystick(1); 
-    	stick2 = new Joystick(2);
+    	stick1 = new Joystick(0); 
+    	stick2 = new Joystick(1);
     	shoot1 = new Victor(1);
     	shoot2 = new Victor(5);
     	treads = new Victor(3);
@@ -59,7 +59,7 @@ public class Robot extends IterativeRobot {
     	camera = CameraServer.getInstance();
     	camera.setQuality(50);
     	camera.startAutomaticCapture("cam0 ");
-    }
+    };
     /**
      * This function is called periodically during autonomous
      */
@@ -69,7 +69,7 @@ public class Robot extends IterativeRobot {
     	yDistance = forwardSensor.getValue() * valueToMm;//gets current position
     	if (tickCount< 200) {
 			rook.mecanumDrive_Polar(0.6, 0, 0);//drives forward 
-		}else {
+		} else {
 			rook.mecanumDrive_Polar(0, 0, 0);
 		}//drives forward for 4 sec 
     	if (tickCount > 200 && xDistance > 4308) {
