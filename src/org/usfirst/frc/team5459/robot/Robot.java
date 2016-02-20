@@ -64,26 +64,25 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-    	gyro.reset();
     	gyroAngle = gyro.getAngle();
     	if (gyroAngle >= 360) {
 			gyroAngle = gyroAngle - 360;
 		}
     	xDistance = distance(forwardSensor);
     	yDistance = distance(sideSensor);//gets current position
-    	if (tickCount< 200) {
+    	if (tickCount < 200) {
 			rook.mecanumDrive_Polar(0.6, 0, 0);//drives forward 
 		} else {
 			rook.mecanumDrive_Polar(0, 0, 0);
 		}//drives forward for 4 sec 
     	if (tickCount > 200 && xDistance > 4308) {
-    		if (tickCount > 500 && yDistance > 914) {
+    		if (yDistance > 914) {
     			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, 0);
     		}else {
 				rook.mecanumDrive_Cartesian(0.5, 0, 0, 0);
 			}
 		}else {
-			if (tickCount > 500 && yDistance > 914) {
+			if (yDistance > 914) {
 				rook.mecanumDrive_Cartesian(0, 0.5, 0, 0);
 			} 
 		}
@@ -103,11 +102,11 @@ public class Robot extends IterativeRobot {
 			}else {
 				rook.mecanumDrive_Polar(0, 0.0, 0);
 			}//turns to 60 degrees
-			if (yDistance < 914.0) {
+			if (yDistance < 400.0) {
 				rook.mecanumDrive_Polar(0.75, 0.0, 0.0);
 			}
 			
-			if (yDistance >= 914.0) {
+			if (yDistance >= 400.0) {
 				 shoot1.set(-0.25);
 				 shoot2.set(0.25);
 			}else {
