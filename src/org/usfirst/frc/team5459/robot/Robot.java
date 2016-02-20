@@ -65,8 +65,12 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
     	gyro.reset();
-    	xDistance = forwardSensor.getValue() * valueToMm;
-    	yDistance = forwardSensor.getValue() * valueToMm;//gets current position
+    	gyroAngle = gyro.getAngle();
+    	if (gyroAngle >= 360) {
+			gyroAngle = gyroAngle - 360;
+		}
+    	xDistance = distance(forwardSensor);
+    	yDistance = distance(sideSensor);//gets current position
     	if (tickCount< 200) {
 			rook.mecanumDrive_Polar(0.6, 0, 0);//drives forward 
 		} else {
@@ -74,13 +78,13 @@ public class Robot extends IterativeRobot {
 		}//drives forward for 4 sec 
     	if (tickCount > 200 && xDistance > 4308) {
     		if (tickCount > 500 && yDistance > 914) {
-    			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, gyroAngle);
+    			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, 0);
     		}else {
-				rook.mecanumDrive_Cartesian(0.5, 0, 0, gyroAngle);
+				rook.mecanumDrive_Cartesian(0.5, 0, 0, 0);
 			}
 		}else {
 			if (tickCount > 500 && yDistance > 914) {
-				rook.mecanumDrive_Cartesian(0, 0.5, 0, gyroAngle);
+				rook.mecanumDrive_Cartesian(0, 0.5, 0, 0);
 			} 
 		}
     	if(xDistance <= 4308 ){
@@ -94,12 +98,16 @@ public class Robot extends IterativeRobot {
 		} 
     	if (xPosition && yPosition) {//in ideal position
 			currentTick = tickCount;
-			if (tickCount >= currentTick && tickCount <= currentTick + 100) {
-				rook.mecanumDrive_Polar(0.65, 60, 0.75);;
+			if (gyroAngle < 60 && gyroAngle > 60) {
+				rook.mecanumDrive_Polar(0, 0.0, 0.5);
 			}else {
-				rook.mecanumDrive_Polar(0, 60, 0);
-			}//drives toward goal for about 2 sec
-			if (tickCount > currentTick + 100) {
+				rook.mecanumDrive_Polar(0, 0.0, 0);
+			}//turns to 60 degrees
+			if (yDistance < 914.0) {
+				rook.mecanumDrive_Polar(0.75, 0.0, 0.0);
+			}
+			
+			if (yDistance >= 914.0) {
 				 shoot1.set(-0.25);
 				 shoot2.set(0.25);
 			}else {
@@ -109,6 +117,7 @@ public class Robot extends IterativeRobot {
 		}
     	tickCount++;//counts ticks; tick == 200msec
     	Timer.delay(0.005);
+    	
     }
 
     /**
@@ -120,9 +129,9 @@ public class Robot extends IterativeRobot {
     	speedY = stick1.getY() * throttleEncode(stick1);
     	speedRote = stick1.getDirectionDegrees() * throttleEncode(stick1);
     	gyroAngle = gyro.getAngle();
-    	/*if (gyroAngle >= 360) {
+    	if (gyroAngle >= 360) {
 			gyroAngle = gyroAngle - 360;
-		}*/
+		}
     	if (stick1.getRawButton(2)) {
 			rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, gyroAngle );//if angle starts freaking out then uncomment the above if statment 
     	}else {
@@ -197,26 +206,35 @@ public class Robot extends IterativeRobot {
      * 
      *
      */
-    public double throttleEncode(Joystick stick) {
+     double throttleEncode(Joystick stick) {
 		double[] encode ={1.0,0.825,0.65,0.475,0.3, 0.125};//values for var speed
-    	if (stick.getThrottle()>= 0.6666) {
+    	if (stick.getThrottle()>= -0.6666) {
 			return encode[0];
 		}
-		if (stick.getThrottle()<= -0.6666) {
+		if (stick.getThrottle()<= 0.6666) {
 			return encode[5];
 		}
-    	if (stick.getThrottle() < 0.6666 && stick.getThrottle() >= 0.3333) {
+    	if (stick.getThrottle() < -0.6666 && stick.getThrottle() >= -0.3333) {
 			return encode[1];
 		}
-    	if (stick.getThrottle() < -0.6666 && stick.getThrottle() >= -0.3333) {
+    	if (stick.getThrottle() < 0.6666 && stick.getThrottle() >= 0.3333) {
 			return encode[4];
 		}
-    	if (stick.getThrottle() < 0.3333 && stick.getThrottle() > 0) {
+    	if (stick.getThrottle() < -0.3333 && stick.getThrottle() > 0) {
 			return encode[2];
 		}
-    	if (stick.getThrottle() < -0.3333 && stick.getThrottle() > 0) {
+    	if (stick.getThrottle() < 0.3333 && stick.getThrottle() >= 0) {
 			return encode[3];
 		}
     	return 0.0;
 	}
+    double distance(AnalogInput sensor){
+    	double dis;
+    	dis = sensor.getValue() * valueToMm;
+    	dis = dis / Math.cos(gyroAngle);
+    	if (dis < 0) {
+			dis = dis * -1;
+		}
+    	return dis;
+    }
 }
