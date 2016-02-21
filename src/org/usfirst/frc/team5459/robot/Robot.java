@@ -58,7 +58,7 @@ public class Robot extends IterativeRobot {
     	camera = CameraServer.getInstance();
     	camera.setQuality(50);
     	camera.startAutomaticCapture("cam0");
-    }
+    }//TODO make cross hairs for goal offset
     /**
      * This function is called periodically during autonomous
      */
