@@ -4,6 +4,11 @@ package org.usfirst.frc.team5459.robot;
 
 import java.security.PublicKey;
 
+import com.ni.vision.NIVision;
+import com.ni.vision.NIVision.DrawMode;
+import com.ni.vision.NIVision.Image;
+import com.ni.vision.NIVision.ShapeMode;
+
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 
@@ -24,9 +29,10 @@ public class Robot extends IterativeRobot {
     ADXRS450_Gyro gyro;//gyro
     AnalogInput forwardSensor, sideSensor;
     CameraServer camera;
+    Image frame;
     double speedX, speedY, speedRote, gyroAngle, throttle, valueToMm = 0.001041/* scale factor for analog ultrasonics*/, xDistance, yDistance;
     boolean armed = false,hasShot = false,countTick = false, xPosition, yPosition, autoRerun = false;
-    int tickCount = 0, currentTick = 0;
+    int tickCount = 0, currentTick = 0, session;
     
     
     
@@ -58,6 +64,12 @@ public class Robot extends IterativeRobot {
     	camera = CameraServer.getInstance();
     	camera.setQuality(50);
     	camera.startAutomaticCapture("cam0");
+    	/*frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+
+        // the camera name (ex "cam0") can be found through the roborio web interface
+        session = NIVision.IMAQdxOpenCamera("cam0",
+                NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        NIVision.IMAQdxConfigureGrab(session);*/
     }//TODO make cross hairs for goal offset
     /**
      * This function is called periodically during autonomous
@@ -122,6 +134,13 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+    	//NIVision.IMAQdxStartAcquisition(session);
+    	//NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
+    	//NIVision.IMAQdxGrab(session, frame, 1);
+        //NIVision.imaqDrawShapeOnImage(frame, frame, rect,
+          //      DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
+        
+        //CameraServer.getInstance().setImage(frame);
     	throttle = (stick1.getThrottle()/2);
     	speedX = stick1.getX() * throttleEncode(stick1);
     	speedY = stick1.getY() * throttleEncode(stick1);
@@ -239,6 +258,8 @@ public class Robot extends IterativeRobot {
 		}//counts ticks
     	Timer.delay(0.005);
     	//TODO: rerun auto on stick 2
+        //NIVision.IMAQdxStopAcquisition(session);
+
     }
     
     /**
