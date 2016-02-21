@@ -119,14 +119,14 @@ public class Robot extends IterativeRobot {
     	speedX = stick1.getX() * throttleEncode(stick1);
     	speedY = stick1.getY() * throttleEncode(stick1);
     	speedRote = stick1.getDirectionDegrees() * throttleEncode(stick1);
-    	gyroAngle = gyro.getAngle();
+    	gyroAngle = -gyro.getAngle();
     	/*if (gyroAngle >= 360) {
 			gyroAngle = gyroAngle - 360;
 		}*/
     	if (stick1.getRawButton(2)) {
-			rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, gyroAngle );//if angle starts freaking out then uncomment the above if statment 
+			rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, /*gyroAngle*/0 );//if angle starts freaking out then uncomment the above if statment 
     	}else {
-    		rook.mecanumDrive_Cartesian(speedX, speedY, 0, gyroAngle);
+    		rook.mecanumDrive_Cartesian(speedX, speedY, 0, /*gyroAngle*/0);
 		}//rotation toggle
 		if(stick1.getRawButton(1)){
     		treads.set(1.0); 
