@@ -190,14 +190,18 @@ public class Robot extends IterativeRobot {
 				arm.set(0.0);
 			}
 	    }else {
+	    	countTick = true;
 	    	if (xDistance > 4308) {
+	    		xPosition = false;
 	    		if (yDistance > 914) {
 	    			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, 0);
+	    			yPosition = false;
 	    		}else {
 					rook.mecanumDrive_Cartesian(0.5, 0, 0, 0);
 				}
 			}else {
 				if (yDistance > 914) {
+					yPosition = false;
 					rook.mecanumDrive_Cartesian(0, 0.5, 0, 0);
 				} 
 			}
