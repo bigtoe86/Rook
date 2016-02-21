@@ -25,8 +25,7 @@ public class Robot extends IterativeRobot {
     AnalogInput forwardSensor, sideSensor;
     CameraServer camera;
     double speedX, speedY, speedRote, gyroAngle, throttle, valueToMm = 0.001041/* scale factor for analog ultrasonics*/, xDistance, yDistance;
-    
-    boolean armed = false,hasShot = false,countTick = false, xPosition, yPosition;
+    boolean armed = false,hasShot = false,countTick = false, xPosition, yPosition, autoRerun = false;
     int tickCount = 0, currentTick = 0;
     
     
@@ -127,70 +126,110 @@ public class Robot extends IterativeRobot {
     	speedX = stick1.getX() * throttleEncode(stick1);
     	speedY = stick1.getY() * throttleEncode(stick1);
     	speedRote = stick1.getDirectionDegrees() * throttleEncode(stick1);
-
     	gyroAngle = -gyro.getAngle();
-    	
-    	
     	if (gyroAngle >= 360) {
 
 			gyroAngle = gyroAngle - 360;
 		}
-    	if (stick1.getRawButton(2)) {
-			rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, /*gyroAngle*/0 );//if angle starts freaking out then uncomment the above if statment 
-    	}else {
-    		rook.mecanumDrive_Cartesian(speedX, speedY, 0, /*gyroAngle*/0);
-		}//rotation toggle
-		if(stick1.getRawButton(1)){
-    		treads.set(1.0); 
-    	}else {
-    		treads.set(0.0);
-    	}
-		//tread toggle
-    	if(stick2.getRawButton(2)){//arm shooter
-    		shoot1.set(-0.25);
-    		shoot2.set(0.25);
-    		armed = true;//will only fire if armed is true
-    	}else {
-			armed = false;
-			shoot1.set(0.0);
-			shoot2.set(0.0);
+    	if(autoRerun == false && stick1.getRawButton(7)){
+	    	if (stick1.getRawButton(2)) {
+				rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, /*gyroAngle*/0 );//if angle starts freaking out then uncomment the above if statment 
+	    	}else {
+	    		rook.mecanumDrive_Cartesian(speedX, speedY, 0, /*gyroAngle*/0);
+			}//rotation toggle
+			if(stick1.getRawButton(1)){
+	    		treads.set(1.0); 
+	    	}else {
+	    		treads.set(0.0);
+	    	}
+			//tread toggle
+	    	if(stick2.getRawButton(2)){//arm shooter
+	    		shoot1.set(-0.25);
+	    		shoot2.set(0.25);
+	    		armed = true;//will only fire if armed is true
+	    	}else {
+				armed = false;
+				shoot1.set(0.0);
+				shoot2.set(0.0);
+			}
+	    	if (stick2.getRawButton(1) && armed == true) {//shoots
+				gate.set(1.0);
+				push.set(1.0); 
+				hasShot = true;
+				countTick = true;
+			}
+	    	if (tickCount >= 30) {
+				tickCount = 0;
+			}
+	    	if (hasShot == true && tickCount == 20){//auto reset push
+	    		push.set(0.0);
+	    		countTick = false;
+	    		tickCount = 0;
+	    	}
+	    	if (stick2.getRawButton(12) && hasShot == true) {//closes gate
+				gate.set(0.0);
+			}
+	    	
+	    	   
+	    	if (stick2.getRawButton(6)) {
+	    		shoot1.set(0.25);
+	    		shoot2.set(-0.25);
+			}else {
+				shoot1.set(0.0);
+				shoot2.set(0.0);
+			}//draws in ball
+	    	
+	    	if (stick2.getRawButton(5)) {//arm up
+				arm.set(0.2);
+			}else {
+				arm.set(0.0);
+			}
+	    	if (stick2.getRawButton(3)) {//arm down
+				arm.set(-0.2);
+			}else {
+				arm.set(0.0);
+			}
+	    }else {
+	    	if (xDistance > 4308) {
+	    		if (yDistance > 914) {
+	    			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, 0);
+	    		}else {
+					rook.mecanumDrive_Cartesian(0.5, 0, 0, 0);
+				}
+			}else {
+				if (yDistance > 914) {
+					rook.mecanumDrive_Cartesian(0, 0.5, 0, 0);
+				} 
+			}
+	    	if(xDistance <= 4308 ){
+	    		xPosition = true;
+	    	}
+	    	if (yDistance > 914) {
+				rook.mecanumDrive_Cartesian(0, 0.5, 0, gyroAngle);
+			}//drives to ideal y
+	    	if (yDistance <= 914 ) {
+				yPosition = true;
+			} 
+	    	if (xPosition && yPosition) {//in ideal position
+				currentTick = tickCount;
+				if (gyroAngle < 60 && gyroAngle > 60) {
+					rook.mecanumDrive_Polar(0, 0.0, 0.5);
+				}else {
+					rook.mecanumDrive_Polar(0, 0.0, 0);
+				}//turns to 60 degrees
+				if (yDistance < 400.0) {
+					rook.mecanumDrive_Polar(0.75, 0.0, 0.0);
+				}
+				
+				if (yDistance >= 400.0) {
+					 shoot1.set(-0.25);
+					 shoot2.set(0.25);
+				}else {
+					shoot1.set(0.0);
+					shoot2.set(0.0);
+				}//shoots after in ideal shoot position
+			}
 		}
-    	if (stick2.getRawButton(1) && armed == true) {//shoots
-			gate.set(1.0);
-			push.set(1.0); 
-			hasShot = true;
-			countTick = true;
-		}
-    	
-    	if (hasShot == true && tickCount == 20){//auto reset push
-    		push.set(0.0);
-    		countTick = false;
-    		tickCount = 0;
-    	}
-    	if (stick2.getRawButton(12) && hasShot == true) {//closes gate
-			gate.set(0.0);
-		}
-    	
-    	   
-    	if (stick2.getRawButton(6)) {
-    		shoot1.set(0.25);
-    		shoot2.set(-0.25);
-		}else {
-			shoot1.set(0.0);
-			shoot2.set(0.0);
-		}//draws in ball
-    	
-    	if (stick2.getRawButton(5)) {//arm up
-			arm.set(0.2);
-		}else {
-			arm.set(0.0);
-		}
-    	if (stick2.getRawButton(3)) {//arm down
-			arm.set(-0.2);
-		}else {
-			arm.set(0.0);
-		}
-    	
     	if (countTick) {
 			tickCount++;
 		}//counts ticks
