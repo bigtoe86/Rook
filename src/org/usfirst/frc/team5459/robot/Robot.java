@@ -58,7 +58,7 @@ public class Robot extends IterativeRobot {
     	sideSensor = new AnalogInput(1);
     	camera = CameraServer.getInstance();
     	camera.setQuality(50);
-    	camera.startAutomaticCapture("cam0 ");
+    	camera.startAutomaticCapture("cam0");
     }
     /**
      * This function is called periodically during autonomous
