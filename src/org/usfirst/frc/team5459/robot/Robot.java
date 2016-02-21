@@ -138,7 +138,7 @@ public class Robot extends IterativeRobot {
 	    		rook.mecanumDrive_Cartesian(speedX, speedY, 0, /*gyroAngle*/0);
 			}//rotation toggle
 			if(stick1.getRawButton(1)){
-	    		treads.set(1.0); 
+	    		treads.set(0.5); 
 	    	}else {
 	    		treads.set(0.0);
 	    	}
