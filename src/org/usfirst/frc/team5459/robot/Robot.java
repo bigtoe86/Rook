@@ -23,8 +23,8 @@ import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 public class Robot extends IterativeRobot {
     RobotDrive rook;//drive name
     Joystick stick1, stick2;//the joysticks
-    Victor arm,shoot1,shoot2,treads;//victor controllers
-    Talon leftRear;
+    Victor shoot1,shoot2,treads;//victor controllers
+    Talon leftRear,arm;
     Servo gate,push;//servos for pushing out ball and gate
     ADXRS450_Gyro gyro;//gyro
     AnalogInput forwardSensor, sideSensor;
@@ -42,8 +42,8 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
     	rook = new RobotDrive(4,7, 0, 2);
-    	rook.setInvertedMotor(MotorType.kRearLeft, true);
-    	rook.setInvertedMotor(MotorType.kFrontLeft,  true);
+    	rook.setInvertedMotor(MotorType.kRearRight, true);
+    	rook.setInvertedMotor(MotorType.kFrontRight,  true);
     	rook.setSafetyEnabled(true);
     	rook.setExpiration(0.1);
     	stick1 = new Joystick(0); 
@@ -51,7 +51,7 @@ public class Robot extends IterativeRobot {
     	shoot1 = new Victor(1);
     	shoot2 = new Victor(5);
     	treads = new Victor(3);
-    	arm = new Victor(8);
+    	arm = new Talon(8);
     	arm.setSafetyEnabled(true);
     	arm.setExpiration(0.1);
     	gyro = new ADXRS450_Gyro();
@@ -148,7 +148,12 @@ public class Robot extends IterativeRobot {
 
 			gyroAngle = gyroAngle - 360;
 		}
-    	if(autoRerun == false && stick1.getRawButton(7)){
+    	if(stick1.getRawButton(7)){
+    		autoRerun = true;
+    	}else {
+			autoRerun = false;
+		}
+    	if(autoRerun == false){
 	    	if (stick1.getRawButton(2)) {
 				rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, /*gyroAngle*/0 );//if angle starts freaking out then uncomment the above if statment 
 	    	}else {
