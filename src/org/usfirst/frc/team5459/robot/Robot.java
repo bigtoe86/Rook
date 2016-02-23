@@ -51,11 +51,9 @@ public class Robot extends IterativeRobot {
     	shoot1 = new Victor(1);
     	shoot2 = new Victor(5);
     	treads = new Victor(3);
-    	arm = new Victor(6);
+    	arm = new Victor(8);
     	arm.setSafetyEnabled(true);
     	arm.setExpiration(0.1);
-    	gate = new Servo(8);
-    	push = new Servo(9);
     	gyro = new ADXRS450_Gyro();
     	gyro.calibrate();
     	gyro.reset();
@@ -171,25 +169,10 @@ public class Robot extends IterativeRobot {
 				shoot1.set(0.0);
 				shoot2.set(0.0);
 			}
-	    	if (stick2.getRawButton(1) && armed == true) {//shoots
-				gate.set(1.0);
-				push.set(1.0); 
-				hasShot = true;
-				countTick = true;
-			}
+	    	
 	    	if (tickCount >= 30) {
 				tickCount = 0;
-			}
-	    	if (hasShot == true && tickCount == 20){//auto reset push
-	    		push.set(0.0);
-	    		countTick = false;
-	    		tickCount = 0;
-	    	}
-	    	if (stick2.getRawButton(12) && hasShot == true) {//closes gate
-				gate.set(0.0);
-			}
-	    	
-	    	   
+			}   
 	    	if (stick2.getRawButton(6)) {
 	    		shoot1.set(0.25);
 	    		shoot2.set(-0.25);
@@ -201,13 +184,16 @@ public class Robot extends IterativeRobot {
 	    	if (stick2.getRawButton(5)) {//arm up
 				arm.set(0.2);
 			}else {
-				arm.set(0.0);
+				
+					arm.set(0.0);
+				
 			}
 	    	if (stick2.getRawButton(3)) {//arm down
 				arm.set(-0.2);
 			}else {
 				arm.set(0.0);
 			}
+	    	
 	    }else {
 	    	countTick = true;
 	    	if (xDistance > 4308) {
