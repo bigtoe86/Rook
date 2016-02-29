@@ -44,8 +44,8 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
     	rook = new RobotDrive(4,7, 0, 2);
-    	rook.setInvertedMotor(MotorType.kRearRight, true);
-    	rook.setInvertedMotor(MotorType.kFrontRight,  true);
+    	rook.setInvertedMotor(MotorType.kRearLeft, true);
+    	rook.setInvertedMotor(MotorType.kFrontLeft,  true);
     	rook.setSafetyEnabled(true);
     	rook.setExpiration(0.1);
     	stick1 = new Joystick(0); 
@@ -145,9 +145,9 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("forward sensor", forwardSensor.getValue());
     	
     	throttle = (stick1.getThrottle()/2);
-    	speedX = stick1.getX() * throttleEncode(stick1);
-    	speedY = stick1.getY() * throttleEncode(stick1);
-    	speedRote = stick1.getDirectionDegrees() * throttleEncode(stick1);
+    	speedX = -stick1.getX() * throttleEncode(stick1);
+    	speedY = -stick1.getY() * throttleEncode(stick1);
+    	speedRote = stick1.getZ() * throttleEncode(stick1);
     	gyroAngle = -gyro.getAngle();
     	if (gyroAngle >= 360) {
 
@@ -272,19 +272,19 @@ public class Robot extends IterativeRobot {
      */
      double throttleEncode(Joystick stick) {
 		double[] encode ={1.0,0.825,0.65,0.475,0.3, 0.125};//values for var speed
-    	if (stick.getThrottle()>= -0.6666) {
+    	if (stick.getThrottle()<= -0.6666) {
 			return encode[0];
 		}
-		if (stick.getThrottle()<= 0.6666) {
+		if (stick.getThrottle()>= 0.6666) {
 			return encode[5];
 		}
-    	if (stick.getThrottle() < -0.6666 && stick.getThrottle() >= -0.3333) {
+    	if (stick.getThrottle() > -0.6666 && stick.getThrottle() <= -0.3333) {
 			return encode[1];
 		}
     	if (stick.getThrottle() < 0.6666 && stick.getThrottle() >= 0.3333) {
 			return encode[4];
 		}
-    	if (stick.getThrottle() < -0.3333 && stick.getThrottle() > 0) {
+    	if (stick.getThrottle() > -0.3333 && stick.getThrottle() < 0) {
 			return encode[2];
 		}
     	if (stick.getThrottle() < 0.3333 && stick.getThrottle() >= 0) {
