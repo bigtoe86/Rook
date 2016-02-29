@@ -11,6 +11,8 @@ import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.RobotDrive.MotorType;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -139,6 +141,9 @@ public class Robot extends IterativeRobot {
           //      DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
         
         //CameraServer.getInstance().setImage(frame);
+    	SmartDashboard.putNumber("side sensor", sideSensor.getValue());
+    	SmartDashboard.putNumber("forward sensor", forwardSensor.getValue());
+    	
     	throttle = (stick1.getThrottle()/2);
     	speedX = stick1.getX() * throttleEncode(stick1);
     	speedY = stick1.getY() * throttleEncode(stick1);
@@ -148,6 +153,7 @@ public class Robot extends IterativeRobot {
 
 			gyroAngle = gyroAngle - 360;
 		}
+    	SmartDashboard.putNumber("Gyro angle", gyroAngle);
     	if(stick1.getRawButton(7)){
     		autoRerun = true;
     	}else {
