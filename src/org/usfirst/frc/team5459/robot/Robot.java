@@ -27,14 +27,13 @@ public class Robot extends IterativeRobot {
     Joystick stick1, stick2;//the joysticks
     Victor shoot1,shoot2,treads;//victor controllers
     Talon leftRear,arm;
-    Servo gate,push;//servos for pushing out ball and gate
     ADXRS450_Gyro gyro;//gyro
     AnalogInput forwardSensor, sideSensor;
     CameraServer camera;
     Image frame;
     double speedX, speedY, speedRote, gyroAngle, throttle, valueToMm = 0.001041/* scale factor for analog ultrasonics*/, xDistance, yDistance;
-    boolean armed = false,hasShot = false,countTick = false, xPosition, yPosition, autoRerun = false;
-    int tickCount = 0, currentTick = 0, session;
+    boolean armed = false,hasShot = false,countTick1 = false, countTick2 = false, xPosition, yPosition, autoRerun = false, armDown = true;
+    int tickCount1 = 0, tickCount2 = 0, currentTick = 0, session;
     
     
     
@@ -81,12 +80,12 @@ public class Robot extends IterativeRobot {
 		}
     	xDistance = distance(forwardSensor);
     	yDistance = distance(sideSensor);//gets current position
-    	if (tickCount < 200) {
+    	if (tickCount1 < 200) {
 			rook.mecanumDrive_Polar(0.6, 0, 0);//drives forward 
 		} else {
 			rook.mecanumDrive_Polar(0, 0, 0);
 		}//drives forward for 4 sec 
-    	if (tickCount > 200 && xDistance > 4308) {
+    	if (tickCount1 > 200 && xDistance > 4308) {
     		if (yDistance > 914) {
     			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, 0);
     		}else {
@@ -100,14 +99,14 @@ public class Robot extends IterativeRobot {
     	if(xDistance <= 4308 ){
     		xPosition = true;
     	}
-    	if (tickCount > 500 && yDistance > 914) {
+    	if (tickCount1 > 500 && yDistance > 914) {
 			rook.mecanumDrive_Cartesian(0, 0.5, 0, gyroAngle);
 		}//drives to ideal y
     	if (yDistance <= 914 ) {
 			yPosition = true;
 		} 
     	if (xPosition && yPosition) {//in ideal position
-			currentTick = tickCount;
+			currentTick = tickCount1;
 			if (gyroAngle < 60 && gyroAngle > 60) {
 				rook.mecanumDrive_Polar(0, 0.0, 0.5);
 			}else {
@@ -125,7 +124,7 @@ public class Robot extends IterativeRobot {
 				shoot2.set(0.0);
 			}//shoots after in ideal shoot position
 		}
-    	tickCount++;//counts ticks; tick == 200msec
+    	tickCount1++;//counts ticks; tick == 200msec
     	Timer.delay(0.005);
     	
     }
@@ -171,7 +170,14 @@ public class Robot extends IterativeRobot {
 	    		treads.set(0.0);
 	    	}
 			//tread toggle
-	    	if (tickCount <= 0 && tickCount >= 3) {
+			if (tickCount1 >= 4) {
+				tickCount1 = 0;
+				countTick1 = false;
+			}
+			if (stick2.getRawButton(1)) {
+				countTick1 = true;
+			}
+	    	if (tickCount1 < 0 && tickCount1 >= 3) {
 				shoot1.set(0.25);
 				shoot2.set(-0.25);//this can be made higher
 			}else {
@@ -179,11 +185,9 @@ public class Robot extends IterativeRobot {
 				shoot2.set(0.0);
 			}//auto shoots the ball for 600 ms
 	    	
-	    	//TODO ajuste when ball is in
-	    	//TODO automate arm
-	    	if (tickCount >= 30) {
-				tickCount = 0;
-			}   
+	    	//TODO maybe ajuste when ball is in
+	    	
+	    	   
 	    	if (stick2.getRawButton(6)) {
 	    		shoot1.set(0.25);
 	    		shoot2.set(-0.25);
@@ -192,21 +196,29 @@ public class Robot extends IterativeRobot {
 				shoot2.set(0.0);
 			}//draws in ball
 	    	
-	    	if (stick2.getRawButton(5)) {//arm up
-				arm.set(0.2);
+	    	if (stick2.getRawButton(5) && armDown) {//arm up
+				countTick2 = true;
+				if (tickCount2>= 1 && tickCount2 <= 3) {
+					arm.set(0.2);
+				}
+	    		
 			}else {
-				
+				if (stick2.getRawButton(3)) {//arm down
+					countTick2 = true;
+					if (tickCount2>= 1 && tickCount2 <= 3) {
+						arm.set(0.2);
+					}
+		    		
+				}else {
 					arm.set(0.0);
-				
-			}
-	    	if (stick2.getRawButton(3)) {//arm down
-				arm.set(-0.2);
-			}else {
-				arm.set(0.0);
+					countTick2 = false;
+					tickCount2 = 0;
+				}	
 			}
 	    	
+	    	
 	    }else {
-	    	countTick = true;
+	    	countTick1 = true;
 	    	if (xDistance > 4308) {
 	    		xPosition = false;
 	    		if (yDistance > 914) {
@@ -231,7 +243,7 @@ public class Robot extends IterativeRobot {
 				yPosition = true;
 			} 
 	    	if (xPosition && yPosition) {//in ideal position
-				currentTick = tickCount;
+				currentTick = tickCount1;
 				if (gyroAngle < 60 && gyroAngle > 60) {
 					rook.mecanumDrive_Polar(0, 0.0, 0.5);
 				}else {
@@ -250,11 +262,13 @@ public class Robot extends IterativeRobot {
 				}//shoots after in ideal shoot position
 			}
 		}
-    	if (countTick) {
-			tickCount++;
+    	if (countTick1) {
+			tickCount1++;
 		}//counts ticks
     	Timer.delay(0.005);
-    	//TODO: rerun auto on stick 2
+    	if (countTick2) {
+			tickCount2++;
+		}
         //NIVision.IMAQdxStopAcquisition(session);
 
     }
@@ -270,6 +284,7 @@ public class Robot extends IterativeRobot {
      * 
      *
      */
+    //TODO change to buttons
      double throttleEncode(Joystick stick) {
 		double[] encode ={1.0,0.825,0.65,0.475,0.3, 0.125};//values for var speed
     	if (stick.getThrottle()<= -0.6666) {
