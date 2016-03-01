@@ -5,9 +5,9 @@ package org.usfirst.frc.team5459.robot;
 import java.security.PublicKey;
 
 import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.DrawMode;
+//import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.ShapeMode;
+//import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.RobotDrive.MotorType;
@@ -171,16 +171,16 @@ public class Robot extends IterativeRobot {
 	    		treads.set(0.0);
 	    	}
 			//tread toggle
-	    	if(stick2.getRawButton(2)){//arm shooter
-	    		shoot1.set(-0.25);
-	    		shoot2.set(0.25);
-	    		armed = true;//will only fire if armed is true
-	    	}else {
-				armed = false;
+	    	if (tickCount <= 0 && tickCount >= 3) {
+				shoot1.set(0.25);
+				shoot2.set(-0.25);//this can be made higher
+			}else {
 				shoot1.set(0.0);
 				shoot2.set(0.0);
-			}
+			}//auto shoots the ball for 600 ms
 	    	
+	    	//TODO ajuste when ball is in
+	    	//TODO automate arm
 	    	if (tickCount >= 30) {
 				tickCount = 0;
 			}   
