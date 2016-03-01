@@ -26,7 +26,7 @@ public class Robot extends IterativeRobot {
     RobotDrive rook;//drive name
     Joystick stick1, stick2;//the joysticks
     Victor shoot1,shoot2,treads;//victor controllers
-    Talon leftRear,arm;
+    Talon arm;
     ADXRS450_Gyro gyro;//gyro
     AnalogInput forwardSensor, sideSensor;
     CameraServer camera;
@@ -140,8 +140,8 @@ public class Robot extends IterativeRobot {
           //      DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
         
         //CameraServer.getInstance().setImage(frame);
-    	SmartDashboard.putNumber("side sensor", sideSensor.getValue());
-    	SmartDashboard.putNumber("forward sensor", forwardSensor.getValue());
+    	SmartDashboard.putNumber("side sensor", distance(sideSensor));
+    	SmartDashboard.putNumber("forward sensor", distance(forwardSensor));
     	
     	throttle = (stick1.getThrottle()/2);
     	speedX = -stick1.getX() * throttleEncode(stick1);
@@ -264,11 +264,12 @@ public class Robot extends IterativeRobot {
 		}
     	if (countTick1) {
 			tickCount1++;
-		}//counts ticks
-    	Timer.delay(0.005);
+		}
     	if (countTick2) {
 			tickCount2++;
-		}
+		}//counts ticks
+    	Timer.delay(0.005);
+    	
         //NIVision.IMAQdxStopAcquisition(session);
 
     }
