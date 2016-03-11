@@ -32,8 +32,8 @@ public class Robot extends IterativeRobot {
     CameraServer camera;
     Image frame;
     double speedX, speedY, speedRote, gyroAngle, throttle, valueToMm = 0.001041/* scale factor for analog ultrasonics*/, xDistance, yDistance;
-    boolean armed = false,hasShot = false,countTick1 = false, countTick2 = false, xPosition, yPosition, autoRerun = false, armDown = true;
-    int tickCount1 = 0, tickCount2 = 0, currentTick = 0, session;
+    boolean armed = false,hasShot = false,countTick1 = false, countTick2 = false, countTick3 = false, xPosition, yPosition, autoRerun = false, armDown = true;
+    int tickCount1 = 0, tickCount2 = 0, currentTick = 0, tickCount3 = 0, session;
     
     
     
@@ -154,11 +154,11 @@ public class Robot extends IterativeRobot {
 		}
     	SmartDashboard.putNumber("Gyro angle", gyroAngle);
     	if(stick1.getRawButton(7)){
-    		autoRerun = true;
+    		autoRerun = false;
     	}else {
-			autoRerun = false;
+			autoRerun = true;
 		}
-    	if(autoRerun == false){
+    	if(autoRerun){
 	    	if (stick1.getRawButton(2)) {
 				rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, gyroAngle );
 	    	}else {
@@ -218,32 +218,29 @@ public class Robot extends IterativeRobot {
 	    	
 	    	
 	    }else {
-	    	countTick1 = true;
-	    	if (xDistance > 4308) {
-	    		xPosition = false;
+	    	countTick3 = true;
+	    	if (tickCount3 > 20 && xDistance > 4308 && tickCount3 < 100) {
 	    		if (yDistance > 914) {
 	    			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, 0);
-	    			yPosition = false;
 	    		}else {
 					rook.mecanumDrive_Cartesian(0.5, 0, 0, 0);
 				}
 			}else {
-				if (yDistance > 914) {
-					yPosition = false;
+				if (yDistance > 914 && tickCount3 < 100) {
 					rook.mecanumDrive_Cartesian(0, 0.5, 0, 0);
-				} 
-			}
+				}else {
+					rook.mecanumDrive_Cartesian(0, 0, 0, gyroAngle);
+				}
+			}//goes to ideal position
 	    	if(xDistance <= 4308 ){
 	    		xPosition = true;
-	    	}
-	    	if (yDistance > 914) {
-				rook.mecanumDrive_Cartesian(0, 0.5, 0, gyroAngle);
-			}//drives to ideal y
+	    	}//checks if x is correct
+	    	
 	    	if (yDistance <= 914 ) {
 				yPosition = true;
-			} 
+			} //checks if y is correct
 	    	if (xPosition && yPosition) {//in ideal position
-				currentTick = tickCount1;
+				
 				if (gyroAngle < 60 && gyroAngle > 60) {
 					rook.mecanumDrive_Polar(0, 0.0, 0.5);
 				}else {
@@ -261,10 +258,14 @@ public class Robot extends IterativeRobot {
 					shoot2.set(0.0);
 				}//shoots after in ideal shoot position
 			}
+	    	
 		}
     	if (countTick1) {
 			tickCount1++;
 		}
+    	if (countTick3){
+    		tickCount3++;
+    	}
     	if (countTick2) {
 			tickCount2++;
 		}//counts ticks
