@@ -97,14 +97,14 @@ public class Robot extends IterativeRobot {
 			}else {
 				rook.mecanumDrive_Cartesian(0, 0, 0, gyroAngle);
 			}
-		}
+		}//goes to ideal position
     	if(xDistance <= 4308 ){
     		xPosition = true;
-    	}
+    	}//checks if x is correct
     	
     	if (yDistance <= 914 ) {
 			yPosition = true;
-		} 
+		} //checks if y is correct
     	if (xPosition && yPosition) {//in ideal position
 			currentTick = tickCount1;
 			if (gyroAngle < 60 && gyroAngle > 60) {
@@ -141,7 +141,7 @@ public class Robot extends IterativeRobot {
         
         //CameraServer.getInstance().setImage(frame);
     	SmartDashboard.putNumber("side sensor", distance(sideSensor));
-    	SmartDashboard.putNumber("forward sensor", distance(forwardSensor));
+    	SmartDashboard.putNumber("forward sensor", distance(forwardSensor));//smart dash board
     	
     	throttle = (stick1.getThrottle()/2);
     	speedX = -stick1.getX() * throttleEncode(stick1);
@@ -160,7 +160,7 @@ public class Robot extends IterativeRobot {
 		}
     	if(autoRerun == false){
 	    	if (stick1.getRawButton(2)) {
-				rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, gyroAngle );//if angle starts freaking out then uncomment the above if statment 
+				rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, gyroAngle );
 	    	}else {
 	    		rook.mecanumDrive_Cartesian(speedX, speedY, 0, gyroAngle);
 			}//rotation toggle
@@ -185,7 +185,7 @@ public class Robot extends IterativeRobot {
 				shoot2.set(0.0);
 			}//auto shoots the ball for 600 ms
 	    	
-	    	//TODO maybe ajuste when ball is in
+	    	//TODO maybe adjust when ball is in
 	    	
 	    	   
 	    	if (stick2.getRawButton(6)) {
