@@ -80,28 +80,28 @@ public class Robot extends IterativeRobot {
 		}
     	xDistance = distance(forwardSensor);
     	yDistance = distance(sideSensor);//gets current position
-    	if (tickCount1 < 200) {
+    	if (tickCount1 < 20) {
 			rook.mecanumDrive_Polar(0.6, 0, 0);//drives forward 
 		} else {
 			rook.mecanumDrive_Polar(0, 0, 0);
 		}//drives forward for 4 sec 
-    	if (tickCount1 > 200 && xDistance > 4308) {
+    	if (tickCount1 > 20 && xDistance > 4308 && tickCount1 < 100) {
     		if (yDistance > 914) {
     			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, 0);
     		}else {
 				rook.mecanumDrive_Cartesian(0.5, 0, 0, 0);
 			}
 		}else {
-			if (yDistance > 914) {
+			if (yDistance > 914 && tickCount1 < 100) {
 				rook.mecanumDrive_Cartesian(0, 0.5, 0, 0);
-			} 
+			}else {
+				rook.mecanumDrive_Cartesian(0, 0, 0, gyroAngle);
+			}
 		}
     	if(xDistance <= 4308 ){
     		xPosition = true;
     	}
-    	if (tickCount1 > 500 && yDistance > 914) {
-			rook.mecanumDrive_Cartesian(0, 0.5, 0, gyroAngle);
-		}//drives to ideal y
+    	
     	if (yDistance <= 914 ) {
 			yPosition = true;
 		} 
