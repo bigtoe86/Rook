@@ -62,7 +62,6 @@ public class Robot extends IterativeRobot {
      gyro = new ADXRS450_Gyro();
      noAuto = 1;
      Auto = 0;
-     
      simpleAuto = 2;
      gyro.calibrate();
      gyro.reset();
@@ -139,8 +138,10 @@ public class Robot extends IterativeRobot {
     }//shoots after in ideal shoot position
   }
      }else if (autoChooser.getSelected().equals(simpleAuto)) {
+
    if (tickCount1 < 70) {
     rook.mecanumDrive_Polar(-1, 0, 0);
+
    }
   }
      tickCount1++;//counts ticks; tick == 200msec
@@ -161,6 +162,7 @@ public class Robot extends IterativeRobot {
         //CameraServer.getInstance().setImage(frame);
      SmartDashboard.putNumber("side sensor", distance(sideSensor));
      SmartDashboard.putNumber("forward sensor", distance(forwardSensor));//smart dash board
+
      if(stick1.getRawButton(12)){
     	 varSpeed = 0.5;
      }else{
@@ -169,6 +171,7 @@ public class Robot extends IterativeRobot {
      speedX = -stick1.getX() * varSpeed;
      speedY = -stick1.getY() * varSpeed;
      speedRote = -stick1.getZ() * varSpeed;
+
      gyroAngle = -gyro.getAngle();
      if (gyroAngle >= 360) {
 
@@ -182,9 +185,11 @@ public class Robot extends IterativeRobot {
   }
      if(autoRerun){
       if (stick1.getRawButton(2)) {
-    rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, 0 );
+    	  rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, 0 );
       }else {
-       rook.mecanumDrive_Cartesian(speedX, speedY, 0, 0);
+    	  rook.mecanumDrive_Cartesian(speedX, speedY, 0, 0);
+
+
    }//rotation toggle
    if(stick1.getRawButton(1)){
        treads.set(0.5); 
@@ -208,27 +213,25 @@ public class Robot extends IterativeRobot {
 	    shoot2.set(0.0);
 	   }//draws in ball
    //auto shoots the ball for 600 ms
+
       
       //TODO maybe adjust when ball is in
       
          
       
-      //arm up
     if(stick2.getRawButton(5)){
       
-     arm.set(0.4);
+     arm.set(0.4);//arm up
     }else{
-    	arm.set(0);
+    	if (stick2.getRawButton(3)) {//arm down
+    	     
+    	      arm.set(0.4);
+    	     
+    	   }else{
+    	   	arm.set(0);
+    	   }
     }
        
-   
-    if (stick2.getRawButton(3)) {//arm down
-     
-      arm.set(0.4);
-     
-   }else{
-   	arm.set(0);
-   }
       
       
      }else {
@@ -305,7 +308,9 @@ public class Robot extends IterativeRobot {
     double distance(AnalogInput sensor){
      double dis;
      dis = sensor.getValue() * valueToMm;
+
      //dis = dis / Math.cos(gyroAngle);
+
      if (dis < 0) {
    dis = dis * -1;
   }
