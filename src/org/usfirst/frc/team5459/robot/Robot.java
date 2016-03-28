@@ -29,12 +29,13 @@ public class Robot extends IterativeRobot {
     Victor shoot1,treads;//victor controllers
     ADXRS450_Gyro gyro;//gyro
     AnalogInput forwardSensor, sideSensor;
+    DigitalInput isBallIn;
     CameraServer camera;
     Image frame;
     Integer noAuto, simpleAuto;
     SendableChooser autoChooser;
     double speedX, speedY, speedRote, gyroAngle, varSpeed, valueToMm = 0.001041/* scale factor for analog ultrasonics*/, xDistance, yDistance;
-    boolean armed = false,hasShot = false,countTick1 = false, countTick2 = false, countTick3 = false, xPosition, yPosition, autoRerun = false, armDown = true;
+    boolean armed = false,hasShot = false,countTick1 = false, countTick2 = false, countTick3 = false, xPosition, yPosition, autoRerun = false, armDown = true, ballIn = false;
     int tickCount1 = 0, tickCount2 = 0, currentTick = 0, tickCount3 = 0, session;
     
     
@@ -59,6 +60,7 @@ public class Robot extends IterativeRobot {
      gyro.reset();
      forwardSensor = new AnalogInput(0);
      sideSensor = new AnalogInput(1);
+     isBallIn = new DigitalInput(0);
      camera = CameraServer.getInstance();
      camera.setQuality(50);
      camera.startAutomaticCapture("cam0");
@@ -118,8 +120,8 @@ public class Robot extends IterativeRobot {
 	     if (stick2.getRawButton(1)) {
 	    	shoot1.set(1);
 	    	//this can be made higher
-	     }else if (stick2.getRawButton(2)) {
-		       shoot1.set(-1);
+	     }else if (stick2.getRawButton(2) && ballIn) {
+		     shoot1.set(-1);
 		       
 		 }else {
 		    shoot1.set(0.0);
@@ -132,15 +134,14 @@ public class Robot extends IterativeRobot {
 	      
 	  
 	    
-	     if (countTick1) {
-	    	 tickCount1++;
-	     }
+	     
 	     if (countTick3){
 	    	 tickCount3++;
 	     }
 	     if (countTick2) {
 	    	 tickCount2++;
 	     }//counts ticks
+	     
 	     Timer.delay(0.005);
 	     
 	        //NIVision.IMAQdxStopAcquisition(session);
