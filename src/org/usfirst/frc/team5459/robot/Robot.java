@@ -89,67 +89,67 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
      if (autoChooser.equals(Auto)) {
-      gyroAngle = gyro.getAngle();
-      if (gyroAngle >= 360) {
-    gyroAngle = gyroAngle - 360;
-   }
-      xDistance = distance(forwardSensor);
-      yDistance = distance(sideSensor);//gets current position
-      if (tickCount1 < 20) {
-    rook.mecanumDrive_Polar(0.6, 0, 0);//drives forward 
-   } else {
-    rook.mecanumDrive_Polar(0, 0, 0);
-   }//drives forward for 4 sec 
-      if (tickCount1 > 20 && xDistance > 4308 && tickCount1 < 100) {
-       if (yDistance > 914) {
-        rook.mecanumDrive_Cartesian(0.5, 0.5, 0, 0);
-       }else {
-     rook.mecanumDrive_Cartesian(0.5, 0, 0, 0);
-    }
-   }else {
-    if (yDistance > 914 && tickCount1 < 100) {
-     rook.mecanumDrive_Cartesian(0, 0.5, 0, 0);
-    }else {
-     rook.mecanumDrive_Cartesian(0, 0, 0, gyroAngle);
-    }
-   }//goes to ideal position
-      if(xDistance <= 4308 ){
-       xPosition = true;
-      }//checks if x is correct
-      
-      if (yDistance <= 914 ) {
-    yPosition = true;
-   } //checks if y is correct
-      if (xPosition && yPosition) {//in ideal position
-    currentTick = tickCount1;
-    if (gyroAngle < 60 && gyroAngle > 60) {
-     rook.mecanumDrive_Polar(0, 0.0, 0.5);
-    }else {
-     rook.mecanumDrive_Polar(0, 0.0, 0);
-    }//turns to 60 degrees
-    if (yDistance < 400.0) {
-     rook.mecanumDrive_Polar(0.75, 0.0, 0.0);
-    }
-    
-    if (yDistance >= 400.0) {
-      shoot1.set(-0.25);
-      shoot2.set(-0.25);
-    }else {
-     shoot1.set(0.0);
-     shoot2.set(0.0);
-    }//shoots after in ideal shoot position
-  }
-     }else if (autoChooser.getSelected().equals(simpleAuto)) {
+    	 gyroAngle = gyro.getAngle();
+    	 if (gyroAngle >= 360) {
+    		 gyroAngle = gyroAngle - 360;
+    	 }
+	      	xDistance = distance(forwardSensor);
+	      	yDistance = distance(sideSensor);//gets current position
+	      	if (tickCount1 < 70) {
+	      		rook.mecanumDrive_Polar(1, 0, 0);//drives forward 
+	      	} else {
+	      		rook.mecanumDrive_Polar(0, 0, 0);
+	      	}//drives forward for 4 sec 
+	      	if (tickCount1 > 70 && xDistance > 4308 && tickCount1 < 100) {
+	      		if (yDistance > 914) {
+	      			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, 0);
+	      		}else {
+	      			rook.mecanumDrive_Cartesian(0.5, 0, 0, 0);
+	      			}
+	      	}else {
+	      		if (yDistance > 914 && tickCount1 < 100) {
+	      			rook.mecanumDrive_Cartesian(0, 0.5, 0, 0);
+	      		}else {
+	      			rook.mecanumDrive_Cartesian(0, 0, 0, gyroAngle);
+	      		}//TODO need to fix this NOW
+	      	}//goes to ideal position
+	      	if(xDistance <= 4308 ){
+	      		xPosition = true;
+	      	}//checks if x is correct
+	      
+	      	if (yDistance <= 914 ) {
+	      		yPosition = true;
+	      	} //checks if y is correct
+	      	if (xPosition && yPosition) {//in ideal position
+	      		currentTick = tickCount1;
+	      		if (gyroAngle < 60 && gyroAngle > 60) {
+	      			rook.mecanumDrive_Polar(0, 0.0, 0.5);
+	      		}else {
+	      			rook.mecanumDrive_Polar(0, 0.0, 0);
+	      		}//turns to 60 degrees
+	      		if (yDistance < 400.0) {
+	      			rook.mecanumDrive_Polar(0.75, 0.0, 0.0);
+	      		}
+	    
+	      		if (yDistance >= 400.0) {
+	      			shoot1.set(-0.25);
+	      			shoot2.set(-0.25);
+	      		}else {
+	      			shoot1.set(0.0);
+	      			shoot2.set(0.0);
+	      		}//shoots after in ideal shoot position
+	      	}
+     		}else if (autoChooser.getSelected().equals(simpleAuto)) {
 
-   if (tickCount1 < 70) {
-    rook.mecanumDrive_Polar(-1, 0, 0);
+     			if (tickCount1 < 70) {
+     				rook.mecanumDrive_Polar(-1, 0, 0);
 
-   }
-  }
-     tickCount1++;//counts ticks; tick == 200msec
-     Timer.delay(0.005);
+     			}
+     		}
+     	tickCount1++;//counts ticks; tick == 200msec
+     	Timer.delay(0.005);
      
-    }
+    	}
 
     /**
      * This function is called periodically during operator control
