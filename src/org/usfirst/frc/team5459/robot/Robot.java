@@ -32,7 +32,7 @@ public class Robot extends IterativeRobot {
     AnalogInput forwardSensor, sideSensor;
     CameraServer camera;
     Image frame;
-    Integer noAuto, Auto, simpleAuto;
+    Integer noAuto, Auto, simpleAuto, shortAuto;
     SendableChooser autoChooser;
     double speedX, speedY, speedRote, gyroAngle, varSpeed, valueToMm = 0.001041/* scale factor for analog ultrasonics*/, xDistance, yDistance;
     boolean armed = false,hasShot = false,countTick1 = false, countTick2 = false, countTick3 = false, xPosition, yPosition, autoRerun = false, armDown = true;
@@ -62,6 +62,7 @@ public class Robot extends IterativeRobot {
      gyro = new ADXRS450_Gyro();
      noAuto = 1;
      Auto = 0;
+     shortAuto = 3;
      simpleAuto = 2;
      gyro.calibrate();
      gyro.reset();
@@ -71,7 +72,7 @@ public class Robot extends IterativeRobot {
      camera.setQuality(50);
      camera.startAutomaticCapture("cam0");
      autoChooser = new SendableChooser();
-     autoChooser.addDefault("no auto", noAuto);
+     autoChooser.addDefault("shorter auto run", shortAuto);
      autoChooser.addObject("Auto", Auto);
      autoChooser.addObject("simple auto", simpleAuto);
      SmartDashboard.putData("auto chooser", autoChooser);
@@ -141,9 +142,13 @@ public class Robot extends IterativeRobot {
 
    if (tickCount1 < 70) {
     rook.mecanumDrive_Polar(-1, 0, 0);
-
    }
-  }
+   }else if(autoChooser.getSelected().equals(shortAuto)){
+	   if (tickCount1 < 40) {
+		    rook.mecanumDrive_Polar(-0.5, 0, 0);
+		   }
+   }
+  
      tickCount1++;//counts ticks; tick == 200msec
      Timer.delay(0.005);
      
