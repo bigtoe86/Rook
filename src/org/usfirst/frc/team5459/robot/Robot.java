@@ -46,7 +46,7 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-     rook = new RobotDrive(4, 2, 0, 7);
+     rook = new RobotDrive(4, 0, 2, 7);
      
      rook.setInvertedMotor(MotorType.kRearLeft, true);
      rook.setInvertedMotor(MotorType.kFrontLeft,  true);//reverses left motors
@@ -165,10 +165,15 @@ public class Robot extends IterativeRobot {
 	     }else{
 	    	 varSpeed = 1.0;
 	     }
-	     speedX = -stick1.getX() * varSpeed;
-	     speedY = -stick1.getY() * varSpeed;
-	     speedRote = -stick1.getZ() * varSpeed;
-	
+	     if(stick1.getRawButton(2)){
+	    	 speedX = stick1.getX() * varSpeed;
+	    	 speedY = stick1.getY() * varSpeed;
+	    	 speedRote = stick1.getZ() * varSpeed;
+	     }else {
+	    	 speedX = -stick1.getX() * varSpeed;
+	    	 speedY = -stick1.getY() * varSpeed;
+	    	 speedRote = -stick1.getZ() * varSpeed;
+		}
 	     gyroAngle = -gyro.getAngle();
 	     if (gyroAngle >= 360) {
 	    	 gyroAngle = gyroAngle - 360;
@@ -184,7 +189,7 @@ public class Robot extends IterativeRobot {
 	   
 	     if (stick2.getRawButton(1)) {
 	    	shoot1.set(1);
-	    	//this can be made higher
+	    	
 	     }else if (stick2.getRawButton(2) && ballIn) {
 		     shoot1.set(-1);
 		       
