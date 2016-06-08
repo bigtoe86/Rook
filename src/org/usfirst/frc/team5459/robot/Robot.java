@@ -204,9 +204,7 @@ public class Robot extends IterativeRobot {
 
      //dis = dis / Math.cos(gyroAngle);
 
-     if (dis < 0) {
-   dis = dis * -1;
-  }
+     
      return dis;
     }
 }
