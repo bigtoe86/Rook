@@ -33,9 +33,9 @@ public class Robot extends IterativeRobot {
     DigitalInput isBallIn;
     CameraServer camera;
     Image frame;
-    Integer noAuto, Auto, simpleAuto;
+    Integer noAuto, Auto, simpleAuto, shortAuto;
     SendableChooser autoChooser;
-    double speedX, speedY, speedRote, gyroAngle, varSpeed, valueToMm = 0.001041/* scale factor for analog ultrasonics*/, xDistance, yDistance;
+    double speedX, speedY, speedRote, gyroAngle, varSpeed, valueToMm = 3.63/* scale factor for analog ultrasonics*/, xDistance, yDistance;
     boolean armed = false,hasShot = false,countTick1 = false, countTick2 = false, countTick3 = false, xPosition, yPosition, autoRerun = false, armDown = true, ballIn = false;
     int tickCount1 = 0, tickCount2 = 0, currentTick = 0, tickCount3 = 0, session;
     
@@ -46,23 +46,19 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-     rook = new RobotDrive(4, 0, 2, 7);
+     rook = new RobotDrive(3, 2, 1, 0);
      
      rook.setInvertedMotor(MotorType.kRearLeft, true);
      rook.setInvertedMotor(MotorType.kFrontLeft,  true);//reverses left motors
-     rook.setInvertedMotor(MotorType.kRearRight, false);
      rook.setSafetyEnabled(true);
      rook.setExpiration(0.1);
      stick1 = new Joystick(0); 
      stick2 = new Joystick(1);
-     shoot1 = new Victor(3);
-     shoot2 = new Victor(5);
-     shoot2.setInverted(true);//inverts motor
-     treads = new Victor(1);
-     arm = new Talon(8);
+     shoot1 = new Victor(4);
      gyro = new ADXRS450_Gyro();
      noAuto = 1;
      Auto = 0;
+     shortAuto = 3;
      simpleAuto = 2;
      gyro.calibrate();
      gyro.reset();
@@ -73,7 +69,7 @@ public class Robot extends IterativeRobot {
      camera.setQuality(50);
      camera.startAutomaticCapture("cam0");
      autoChooser = new SendableChooser();
-     autoChooser.addDefault("no auto", noAuto);
+     autoChooser.addDefault("shorter auto run", shortAuto);
      autoChooser.addObject("Auto", Auto);
      autoChooser.addObject("simple auto", simpleAuto);
      SmartDashboard.putData("auto chooser", autoChooser);
@@ -88,19 +84,14 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-     if (autoChooser.equals(Auto)) {
+     
     	 gyroAngle = gyro.getAngle();
     	 if (gyroAngle >= 360) {
     		 gyroAngle = gyroAngle - 360;
     	 }
 	      	xDistance = distance(forwardSensor);
-	      	yDistance = distance(sideSensor);//gets current position
-	      	if (tickCount1 < 70) {
-	      		rook.mecanumDrive_Polar(1, 0, 0);//drives forward 
-	      	} else {
-	      		rook.mecanumDrive_Polar(0, 0, 0);
-	      	}//drives forward for 4 sec 
-	      	if (tickCount1 > 70 && xDistance > 4308 && tickCount1 < 100) {
+	      	yDistance = distance(sideSensor);//gets current position 
+	      	if (tickCount1 > 70 && xDistance > 1430 && tickCount1 < 100) {
 	      		if (yDistance > 914) {
 	      			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, 0);
 	      		}else {
@@ -113,14 +104,14 @@ public class Robot extends IterativeRobot {
 	      			rook.mecanumDrive_Cartesian(0, 0, 0, gyroAngle);
 	      		}//TODO need to fix this NOW
 	      	}//goes to ideal position
-	      	if(xDistance <= 4308 ){
+	      	if(xDistance <= 1430  && tickCount1 > 90){
 	      		xPosition = true;
 	      	}//checks if x is correct
 	      
-	      	if (yDistance <= 914 ) {
+	      	if (yDistance <= 914 && tickCount1 > 90) {
 	      		yPosition = true;
 	      	} //checks if y is correct
-	      	if (xPosition && yPosition) {//in ideal position
+	      	/*if (xPosition && yPosition) {//in ideal position
 	      		currentTick = tickCount1;
 	      		if (gyroAngle < 60 && gyroAngle > 60) {
 	      			rook.mecanumDrive_Polar(0, 0.0, 0.5);
@@ -128,26 +119,26 @@ public class Robot extends IterativeRobot {
 	      			rook.mecanumDrive_Polar(0, 0.0, 0);
 	      		}//turns to 60 degrees
 	      		if (yDistance < 400.0) {
-	      			rook.mecanumDrive_Polar(0.75, 0.0, 0.0);
+	      			rook.mecanumDrive_Polar(1, 0.0, 0.0);
 	      		}
 	    
-	      		if (yDistance >= 400.0) {
-	      			shoot1.set(-0.25);
-	      			shoot2.set(-0.25);
+	      		if (yDistance >= 300.0) {
+	      			shoot1.set(1);
+	      			
 	      		}else {
 	      			shoot1.set(0.0);
-	      			shoot2.set(0.0);
+	      		
 	      		}//shoots after in ideal shoot position
-	      	}
-     		}else if (autoChooser.getSelected().equals(simpleAuto)) {
+	      	}*/
+	      	if (tickCount1 < 70) {
+	      		rook.mecanumDrive_Cartesian(0, 1, 0, 0);//drives forward 
+	      	} else {
+	      		rook.mecanumDrive_Polar(0, 0, 0);
+	      	}//drives forward for 4 sec
 
-     			if (tickCount1 < 70) {
-     				rook.mecanumDrive_Polar(-1, 0, 0);
-
-     			}
-     		}
      	tickCount1++;//counts ticks; tick == 200msec
      	Timer.delay(0.005);
+
      
     	}
 
@@ -155,8 +146,8 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-
-
+    
+    	
     	 SmartDashboard.putNumber("side sensor", distance(sideSensor));
 	     SmartDashboard.putNumber("forward sensor", distance(forwardSensor));//smart dash board
 	
@@ -180,9 +171,9 @@ public class Robot extends IterativeRobot {
 	     }
 	     SmartDashboard.putNumber("Gyro angle", gyroAngle);
 	     if (stick1.getRawButton(2)) {
-	    	rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, 0 );
+	    	rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, /*gyroAngle*/0 );
 	     }else {
-	       rook.mecanumDrive_Cartesian(speedX, speedY, 0, 0);
+	       rook.mecanumDrive_Cartesian(speedX, speedY, 0, /*gyroAngle*/0);
 	
 	     }//rotation toggle
 	     
@@ -190,7 +181,7 @@ public class Robot extends IterativeRobot {
 	     if (stick2.getRawButton(1)) {
 	    	shoot1.set(1);
 	    	
-	     }else if (stick2.getRawButton(2) && ballIn) {
+	     }else if (stick2.getRawButton(2) /*&& ballIn*/) {
 		     shoot1.set(-1);
 		       
 		 }else {
