@@ -4,7 +4,7 @@ package org.usfirst.frc.team5459.robot;
 
 import java.security.PublicKey;
 
-import com.ni.vision.NIVision;
+
 //import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
 //import com.ni.vision.NIVision.ShapeMode;
@@ -26,8 +26,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
     RobotDrive rook;//drive name
     Joystick stick1, stick2;//the joysticks
-    Victor shoot1,shoot2,treads;//victor controllers
-    Talon arm;
+    Victor shoot2,treads;//victor controllers
+    Talon arm,shoot1;
     ADXRS450_Gyro gyro;//gyro
     AnalogInput forwardSensor, sideSensor;
     DigitalInput isBallIn;
@@ -54,7 +54,9 @@ public class Robot extends IterativeRobot {
      rook.setExpiration(0.1);
      stick1 = new Joystick(0); 
      stick2 = new Joystick(1);
-     shoot1 = new Victor(4);
+
+     shoot1 = new Talon(5);
+
      gyro = new ADXRS450_Gyro();
      noAuto = 1;
      Auto = 0;
@@ -73,13 +75,7 @@ public class Robot extends IterativeRobot {
      autoChooser.addObject("Auto", Auto);
      autoChooser.addObject("simple auto", simpleAuto);
      SmartDashboard.putData("auto chooser", autoChooser);
-     /*frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
-        // the camera name (ex "cam0") can be found through the roborio web interface
-        session = NIVision.IMAQdxOpenCamera("cam0",
-                NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-        NIVision.IMAQdxConfigureGrab(session);*/
-    }//TODO make cross hairs for goal offset
+    }
     /**
      * This function is called periodically during autonomous
      */
@@ -91,19 +87,20 @@ public class Robot extends IterativeRobot {
     	 }
 	      	xDistance = distance(forwardSensor);
 	      	yDistance = distance(sideSensor);//gets current position 
-	      	if (tickCount1 > 70 && xDistance > 1430 && tickCount1 < 100) {
-	      		if (yDistance > 914) {
-	      			rook.mecanumDrive_Cartesian(0.5, 0.5, 0, 0);
-	      		}else {
-	      			rook.mecanumDrive_Cartesian(0.5, 0, 0, 0);
-	      			}
-	      	}else {
-	      		if (yDistance > 914 && tickCount1 < 100) {
-	      			rook.mecanumDrive_Cartesian(0, 0.5, 0, 0);
-	      		}else {
-	      			rook.mecanumDrive_Cartesian(0, 0, 0, gyroAngle);
-	      		}//TODO need to fix this NOW
-	      	}//goes to ideal position
+	      	//if (tickCount1 > 70 && xDistance > 1430 && tickCount1 < 100) {
+	      		//if (yDistance > 914) {
+	      			//rook.mecanumDrive_Cartesian(0.5, 0.5, 0, 0);
+	      		//}else {
+	      			//rook.mecanumDrive_Cartesian(0.5, 0, 0, 0);
+	      			//}
+	      	//}else {
+	      		//if (yDistance > 914 && tickCount1 < 100) {
+	      			//rook.mecanumDrive_Cartesian(0, 0.5, 0, 0);
+	      		//}else {
+	      			//rook.mecanumDrive_Cartesian(0, 0, 0, gyroAngle);
+	      		//}
+	      	//}//goes to ideal position
+
 	      	if(xDistance <= 1430  && tickCount1 > 90){
 	      		xPosition = true;
 	      	}//checks if x is correct
@@ -130,7 +127,8 @@ public class Robot extends IterativeRobot {
 	      		
 	      		}//shoots after in ideal shoot position
 	      	}*/
-	      	if (tickCount1 < 70) {
+	      	if (tickCount1 < 89) {
+
 	      		rook.mecanumDrive_Cartesian(0, 1, 0, 0);//drives forward 
 	      	} else {
 	      		rook.mecanumDrive_Polar(0, 0, 0);
@@ -150,67 +148,41 @@ public class Robot extends IterativeRobot {
     	
     	 SmartDashboard.putNumber("side sensor", distance(sideSensor));
 	     SmartDashboard.putNumber("forward sensor", distance(forwardSensor));//smart dash board
-	
 	     if(stick1.getRawButton(12)){
 	    	 varSpeed = 0.5;
 	     }else{
-	    	 varSpeed = 1.0;
+	    	 varSpeed = 0.7;
 	     }
-	     if(stick1.getRawButton(2)){
-	    	 speedX = stick1.getX() * varSpeed;
-	    	 speedY = stick1.getY() * varSpeed;
-	    	 speedRote = stick1.getZ() * varSpeed;
-	     }else {
-	    	 speedX = -stick1.getX() * varSpeed;
-	    	 speedY = -stick1.getY() * varSpeed;
-	    	 speedRote = -stick1.getZ() * varSpeed;
-		}
+	     speedX = -stick1.getX() * varSpeed;
+	     speedY = -stick1.getY() * varSpeed;
+	     speedRote = -stick1.getZ() *varSpeed;
 	     gyroAngle = -gyro.getAngle();
 	     if (gyroAngle >= 360) {
 	    	 gyroAngle = gyroAngle - 360;
 	     }
 	     SmartDashboard.putNumber("Gyro angle", gyroAngle);
+
 	     if (stick1.getRawButton(2)) {
 	    	rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, /*gyroAngle*/0 );
 	     }else {
 	       rook.mecanumDrive_Cartesian(speedX, speedY, 0, /*gyroAngle*/0);
-	
-	     }//rotation toggle
-	     
-	   
-	     if (stick2.getRawButton(1)) {
-	    	shoot1.set(1);
-	    	
-	     }else if (stick2.getRawButton(2) /*&& ballIn*/) {
-		     shoot1.set(-1);
-		       
+	     }
+	     if (stick1.getRawButton(1)) {
+	    	shoot1.set(-1);
+	     }else if (stick1.getRawButton(2) /*&& ballIn*/) {
+		     shoot1.set(1);
 		 }else {
 		    shoot1.set(0.0);
 		    
 		 }
-	      
-	      //TODO maybe adjust when ball is in
-	      
-	         
-	      
-	  
-	    
-	     
 	     if (countTick3){
 	    	 tickCount3++;
 	     }
 	     if (countTick2) {
 	    	 tickCount2++;
 	     }//counts ticks
-	     
 	     Timer.delay(0.005);
-	     
-	        //NIVision.IMAQdxStopAcquisition(session);
-	
-
-        //NIVision.IMAQdxStopAcquisition(session);
-
-
+	 
     }
     
     /**
@@ -224,7 +196,7 @@ public class Robot extends IterativeRobot {
      * 
      *
      */
-    //TODO change to buttons
+    
      
     double distance(AnalogInput sensor){
      double dis;
