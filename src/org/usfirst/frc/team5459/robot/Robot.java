@@ -157,15 +157,15 @@ public class Robot extends IterativeRobot {
 	     speedY = -stick1.getY() * varSpeed;
 	     speedRote = -stick1.getZ() *varSpeed;
 	     gyroAngle = -gyro.getAngle();
-	     if (gyroAngle >= 360) {
-	    	 gyroAngle = gyroAngle - 360;
-	     }
+	     //if (gyroAngle >= 360) {
+	    	// gyroAngle = gyroAngle - 360;
+	     //}
 	     SmartDashboard.putNumber("Gyro angle", gyroAngle);
 
 	     if (stick1.getRawButton(2)) {
-	    	rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, /*gyroAngle*/0 );
+	    	rook.mecanumDrive_Cartesian(speedX, speedY, speedRote, gyroAngle );
 	     }else {
-	       rook.mecanumDrive_Cartesian(speedX, speedY, 0, /*gyroAngle*/0);
+	       rook.mecanumDrive_Cartesian(speedX, speedY, 0, gyroAngle);
 	     }
 	     if (stick1.getRawButton(1)) {
 	    	shoot1.set(-1);
