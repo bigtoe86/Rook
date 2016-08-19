@@ -149,7 +149,7 @@ public class Robot extends IterativeRobot {
     	
     	 SmartDashboard.putNumber("side sensor", distance(sideSensor));
 	     SmartDashboard.putNumber("forward sensor", distance(forwardSensor));//smart dash board
-	     if(stick1.getRawButton(12)){
+	     if(!stick1.getRawButton(12)){
 	    	 varSpeed = 0.5;
 	     }else{
 	    	 varSpeed = 0.7;
